@@ -51,4 +51,8 @@ export interface BaseMovieProps {
     images: MovieImage[];
   }
 
+  export interface MovieListPageTemplateProps extends BaseMovieListProps {
+    title: string;
+  }
+
   export type FilterOption = "title" | "genre";
