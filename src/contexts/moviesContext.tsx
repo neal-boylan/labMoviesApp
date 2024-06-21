@@ -3,14 +3,18 @@ import { BaseMovieProps, Review } from "../types/interfaces";
 
 interface MovieContextInterface {
     favourites: number[];
+    mustWatch: number[];
     addToFavourites: ((movie: BaseMovieProps) => void);
+    addToMustWatch: ((movie: BaseMovieProps) => void);
     removeFromFavourites: ((movie: BaseMovieProps) => void);
     addReview: ((movie: BaseMovieProps, review: Review) => void);  // NEW
 }
 const initialContextState: MovieContextInterface = {
     favourites: [],
+    mustWatch: [],
     addToFavourites: () => {},
     removeFromFavourites: () => {},
+    addToMustWatch: () => {},
     addReview: (movie, review) => { movie.id, review},  // NEW
 };
 
@@ -19,6 +23,7 @@ export const MoviesContext = React.createContext<MovieContextInterface>(initialC
 const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const [myReviews, setMyReviews] = useState<Review[]>( [] )  // NEW
     const [favourites, setFavourites] = useState<number[]>([]);
+    const [mustWatch, setMustWatch] = useState<number[]>([]);
 
     const addToFavourites = useCallback((movie: BaseMovieProps) => {
         setFavourites((prevFavourites) => {
@@ -26,6 +31,16 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
                 return [...prevFavourites, movie.id];
             }
             return prevFavourites;
+        });
+    }, []);
+
+    const addToMustWatch = useCallback((movie: BaseMovieProps) => {
+        setMustWatch((prevMustWatch) => {
+            if (!prevMustWatch.includes(movie.id)) {
+                console.log([...prevMustWatch, movie.id]);
+                return [...prevMustWatch, movie.id];
+            }
+            return prevMustWatch;
         });
     }, []);
 
@@ -41,7 +56,9 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
         <MoviesContext.Provider
             value={{
                 favourites,
+                mustWatch,
                 addToFavourites,
+                addToMustWatch,
                 removeFromFavourites,
                 addReview,    // NEW
             }}
